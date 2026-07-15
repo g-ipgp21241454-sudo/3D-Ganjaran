@@ -431,7 +431,49 @@ class="history">
 
 
 </div>
-<script>
+<script type="module">
+<script type="module">
+
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import { 
+getDatabase,
+ref,
+set,
+onValue
+} 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+
+const firebaseConfig = {
+
+apiKey: "你的apiKey",
+
+authDomain: "dganjaran-1c3db.firebaseapp.com",
+
+databaseURL:
+"https://dganjaran-1c3db-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+projectId:"dganjaran-1c3db",
+
+storageBucket:"dganjaran-1c3db.firebasestorage.app",
+
+messagingSenderId:"501343256094",
+
+appId:"1:501343256094:web:2fbe2ab405f4df82a1b80f"
+
+};
+
+
+
+const app = initializeApp(firebaseConfig);
+
+
+const database = getDatabase(app);
 
 
 // =======================
@@ -530,13 +572,7 @@ point:60
 // =======================
 
 
-let systemData =
-
-JSON.parse(localStorage.getItem("rewardData"))
-
-||
-
-{
+let systemData={
 
 students:[],
 
@@ -544,6 +580,30 @@ history:[]
 
 };
 
+
+
+onValue(
+
+ref(database,"rewardData"),
+
+(snapshot)=>{
+
+
+if(snapshot.exists()){
+
+
+systemData=snapshot.val();
+
+
+}
+
+
+show();
+
+
+}
+
+);
 
 
 
@@ -555,20 +615,20 @@ history:[]
 
 function save(){
 
-localStorage.setItem(
 
-"rewardData",
+set(
 
-JSON.stringify(systemData)
+ref(database,"rewardData"),
+
+systemData
 
 );
 
 
 show();
 
+
 }
-
-
 
 
 
@@ -1394,8 +1454,50 @@ onclick="deleteHistory(${index})">
 show();
 
 
+<script type="module">
+<script type="module">
 
-</script>
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import { 
+getDatabase,
+ref,
+set,
+onValue
+} 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+
+const firebaseConfig = {
+
+apiKey: "你的apiKey",
+
+authDomain: "dganjaran-1c3db.firebaseapp.com",
+
+databaseURL:
+"https://dganjaran-1c3db-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+projectId:"dganjaran-1c3db",
+
+storageBucket:"dganjaran-1c3db.firebasestorage.app",
+
+messagingSenderId:"501343256094",
+
+appId:"1:501343256094:web:2fbe2ab405f4df82a1b80f"
+
+};
+
+
+
+const app = initializeApp(firebaseConfig);
+
+
+const database = getDatabase(app);
+
 
 
 </body>
