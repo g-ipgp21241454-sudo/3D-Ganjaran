@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🌟 3D Reward System V2 🌟</title>
+
+
+<style>
+
+body{
+
+font-family:"Microsoft JhengHei",Arial,sans-serif;
+
+background:#fffbea;
+
+margin:0;
+
+padding:20px;
+
+}
+
+.container{
+
+max-width:1100px;
+
+margin:auto;
+
+}
+
+
+h1{
+
+text-align:center;
+
+color:#3b82f6;
+
+font-size:40px;
+
+}
+
+
+.subtitle{
+
+text-align:center;
+
+color:#777;
+
+}
+
+
+
+.card{
+
+background:white;
+
+border-radius:25px;
+
+padding:25px;
+
+margin:20px 0;
+
+box-shadow:0 5px 15px rgba(0,0,0,0.12);
+
+}
+
+
+
+input{
+
+padding:12px;
+
+border-radius:12px;
+
+border:1px solid #ddd;
+
+font-size:16px;
+
+width:200px;
+
+}
+
+
+
+
+
+bbutton{
+
+background:#7cc7ff;
+
+color:white;
+
+border:none;
+
+border-radius:15px;
+
+padding:10px 15px;
+
+cursor:pointer;
+
+margin:4px;
+
+font-size:14px;
+
+}
+
+
+
+button:hover{
+
+transform:scale(1.05);
+
+}
+
+
+
+.student{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:18px;
+
+border-bottom:1px solid #eee;
+
+}
+
+
+
+.avatar{
+
+font-size:45px;
+
+margin-right:15px;
+
+}
+
+
+
+.studentInfo{
+
+display:flex;
+
+align-items:center;
+
+}
+
+
+
+.studentName{
+
+font-size:22px;
+
+font-weight:bold;
+
+}
+
+
+
+.star{
+
+font-size:20px;
+
+color:#ffc400;
+
+margin-top:5px;
+
+}
+
+
+
+.scoreBox{
+
+background:#dff3ff;
+
+border-radius:15px;
+
+padding:8px 15px;
+
+display:inline-block;
+
+margin-top:8px;
+
+font-weight:bold;
+
+color:#2563eb;
+
+}
+
+
+.rank{
+
+font-size:25px;
+
+}
+
+
+
+
+.reward{
+
+background:#fff4c2;
+
+}
+padding:15px;
+
+border-radius:15px;
+
+margin:10px 0;
+
+display:flex;
+
+justify-content:space-between;
+
+}
+
+
+
+.available{
+
+background:#d9ffd9;
+
+}
+
+
+
+.lock{
+
+background:#eeeeee;
+
+color:#888;
+
+}
+
+
+
+.history{
+
+line-height:2;
+
+}
+
+
+
+
+.historyItem{
+
+background:#eef8ff;
+
+padding:8px;
+
+border-radius:10px;
+
+margin:5px 0;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+
+
+.deleteBtn{
+
+background:#ff7777;
+
+color:white;
+
+}
+
+
+
+.clearBtn{
+
+background:#888;
+
+color:white;
+
+}
+
+
+
+.small{
+
+font-size:13px;
+
+color:#777;
+
+}
+
+
+
+</style>
+
+
+</head>
+
+
+
+<body>
+
+
+<div class="container">
+
+
+<h1>
+🌟 3D Sistem Ganjaran 🌟
+</h1>
+
+
+<p class="subtitle">
+Bahasa Melayu (Cikgu Din)
+</p>
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+👩‍🏫 Tambah murid
+</h2>
+
+
+<input 
+id="studentInput"
+placeholder="Masukkan nama murid.">
+
+
+<button onclick="addStudent()">
+
+➕ Tambah
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+🏆 Papan Ganjaran 排行榜
+</h2>
+
+
+<div id="studentList">
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+🎁 Senarai Hadiah 奖励兑换表</h2>
+
+
+<p class="small">
+绿色 = 学生目前可以兑换的奖励
+</p>
+
+
+<div id="rewardList">
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+📜 Sejarah 操作纪录
+</h2>
+
+
+<button 
+class="clearBtn"
+onclick="clearHistory()">
+
+🧹 Padamkan semua
+
+</button>
+
+
+<div id="history"
+class="history">
+
+
+</div>
+
+
+</div>
+
+
+
+
+</div>
+<script>
+
+
+// =======================
+// Kartun Comel
+// =======================
+
+const avatars=[
+
+"🐱",
+"🐰",
+"🐻",
+"🐼",
+"🐶",
+"🦊",
+"🐸",
+"🐹",
+"🐨",
+"🐯",
+"🐵"
+
+];
+
+
+
+
+// =======================
+// Maklumat Ganjaran
+// =======================
+
+const rewards=[
+
+
+{
+name:"Pelekat贴纸",
+point:5
+},
+
+
+{
+name:"Pemadam 橡皮 / Pensel 铅笔",
+point:10
+},
+
+
+{
+name:"Sticky Note",
+point:15
+},
+
+
+{
+name:"Buku Nota精美笔记本",
+point:20
+},
+
+
+{
+name:"Squishy 捏捏 / Kipas 扇子",
+point:25
+},
+
+
+{
+name:"Keychain 钥匙扣",
+point:30
+},
+
+
+{
+name:"LEGO",
+point:40
+},
+
+
+{
+name:"Patung 手指娃娃",
+point:50
+},
+
+
+{
+name:"Pizza 🍕",
+point:60
+}
+
+
+
+];
+
+
+
+
+
+// =======================
+// Baca maklumat
+// =======================
+
+
+let systemData =
+
+JSON.parse(localStorage.getItem("rewardData"))
+
+||
+
+{
+
+students:[],
+
+history:[]
+
+};
+
+
+
+
+
+
+// =======================
+// simpan maklumat
+// =======================
+
+function save(){
+
+localStorage.setItem(
+
+"rewardData",
+
+JSON.stringify(systemData)
+
+);
+
+
+show();
+
+}
+
+
+
+
+
+// =======================
+// Tambah murid
+// =======================
+
+
+function addStudent(){
+
+
+let input=
+
+document.getElementById("studentInput");
+
+
+
+let name=
+
+input.value.trim();
+
+
+
+if(name===""){
+
+alert("请输入学生名字");
+
+return;
+
+}
+
+
+
+let avatar =
+
+avatars[Math.floor(Math.random()*avatars.length)];
+
+
+
+systemData.students.push({
+
+name:name,
+
+avatar:avatar,
+
+point:0,
+
+records:[]
+
+});
+
+
+
+let record=
+
+name+" 加入班级 🎉";
+
+
+
+systemData.history.unshift(record);
+
+
+
+input.value="";
+
+
+
+save();
+
+
+
+}
+
+
+
+
+
+
+// =======================
+// 加分
+// =======================
+
+
+function addPoint(index,amount){
+
+
+let student=
+
+systemData.students[index];
+
+
+
+student.point += amount;
+
+
+
+let record=
+
+student.avatar+
+
+" "+
+
+student.name+
+
+" 获得 ⭐ +"+
+
+amount;
+
+
+
+student.records.push(record);
+
+
+
+systemData.history.unshift(record);
+
+
+
+save();
+
+
+
+}
+
+
+
+
+
+
+// =======================
+// 扣分
+// =======================
+
+
+function minusPoint(index){
+
+
+let student=
+
+systemData.students[index];
+
+
+
+if(student.point<=0){
+
+alert("没有分数可以扣除");
+
+return;
+
+}
+
+
+
+student.point--;
+
+
+
+let record=
+
+student.avatar+
+
+" "+
+
+student.name+
+
+" 被扣除 ⭐1";
+
+
+
+systemData.history.unshift(record);
+
+
+
+save();
+
+
+
+}
+
+
+
+
+
+
+
+// =======================
+// 删除学生
+// =======================
+
+
+function deleteStudent(index){
+
+
+if(confirm("确定删除学生吗？")){
+
+
+systemData.students.splice(index,1);
+
+
+save();
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+// =======================
+// 兑换奖励
+// =======================
+
+
+function redeem(index){
+
+
+let student=
+
+systemData.students[index];
+
+
+
+// 只显示可兑换奖励
+
+let available=
+
+rewards.filter(function(r){
+
+
+return student.point >= r.point;
+
+
+});
+
+
+
+
+if(available.length===0){
+
+
+alert(
+
+"目前 ⭐"+student.point+
+
+" 分，还不能兑换奖励哦！"
+
+);
+
+
+return;
+
+
+}
+
+
+
+
+let menu=
+
+"请选择可以兑换的奖励：\n\n";
+
+
+
+available.forEach(function(r,i){
+
+
+menu+=
+
+(i+1)+
+
+". 🎁 "+
+
+r.name+
+
+" ("+
+
+r.point+
+
+"⭐)\n";
+
+
+});
+
+
+
+let choice=
+
+prompt(menu);
+
+
+
+let selected=
+
+parseInt(choice)-1;
+
+
+
+if(!available[selected]){
+
+return;
+
+}
+
+
+
+let reward=
+
+available[selected];
+
+
+
+student.point-=reward.point;
+
+
+
+let record=
+
+student.avatar+
+
+" "+
+
+student.name+
+
+" 兑换 🎁 "+
+
+reward.name+
+
+" (-"+
+
+reward.point+"⭐)";
+
+
+
+student.records.push(record);
+
+
+
+systemData.history.unshift(record);
+
+
+
+save();
+
+
+
+}
+
+ 
+// =======================
+// 删除单条纪录
+// =======================
+
+
+function deleteHistory(index){
+
+
+systemData.history.splice(index,1);
+
+
+save();
+
+
+}
+
+
+
+
+
+
+
+// =======================
+// 清空全部纪录
+// =======================
+
+
+function clearHistory(){
+
+
+if(systemData.history.length===0){
+
+alert("目前没有纪录");
+
+return;
+
+}
+
+
+
+if(confirm("确定清空全部操作纪录吗？")){
+
+
+systemData.history=[];
+
+
+save();
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+// =======================
+// 显示页面
+// =======================
+
+
+function show(){
+
+
+
+// =======================
+// 学生排行榜
+// =======================
+
+
+let list=
+
+document.getElementById("studentList");
+
+
+
+list.innerHTML="";
+
+
+
+
+
+let ranking=
+
+[...systemData.students]
+
+.sort(function(a,b){
+
+return b.point-a.point;
+
+});
+
+
+
+
+
+
+ranking.forEach(function(student){
+
+
+
+let index=
+
+systemData.students.indexOf(student);
+
+
+
+
+// 星星显示
+
+let stars="";
+
+
+
+for(
+
+let i=0;
+
+i<Math.min(student.point,10);
+
+i++
+
+){
+
+stars+="⭐";
+
+}
+
+
+
+
+
+// 学生可兑换奖励
+
+let canBuy=
+
+rewards.filter(function(r){
+
+
+return student.point>=r.point;
+
+
+});
+
+
+
+let rewardText="";
+
+
+if(canBuy.length===0){
+
+
+rewardText="暂时还不能兑换奖励";
+
+
+}
+
+else{
+
+
+canBuy.forEach(function(r){
+
+
+rewardText+=
+
+"🎁 "+r.name+" ";
+
+
+});
+
+
+}
+
+
+
+
+
+
+list.innerHTML +=`
+
+
+
+<div class="student">
+
+
+<div>
+
+
+<div class="studentInfo">
+
+
+<div class="avatar">
+
+${student.avatar}
+
+</div>
+
+
+
+<div>
+
+
+<div class="rank">
+
+🏆 ${ranking.indexOf(student)+1}
+
+</div>
+
+
+
+<div class="studentName">
+
+${student.name}
+
+</div>
+
+
+
+<div class="star">
+
+${stars}
+
+</div>
+
+
+
+<div class="scoreBox">
+
+目前分数：${student.point} ⭐
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+<br>
+
+
+<div>
+
+可以兑换：
+
+${rewardText}
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div>
+
+
+<button onclick="addPoint(${index},1)">
+
++1 ⭐
+
+</button>
+
+
+<button onclick="addPoint(${index},5)">
+
++5 ⭐
+
+</button>
+
+
+
+<button onclick="minusPoint(${index})">
+
+-1
+
+</button>
+
+
+
+<button onclick="redeem(${index})">
+
+🎁兑换
+
+</button>
+
+
+
+<button onclick="deleteStudent(${index})">
+
+删除
+
+</button>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+`;
+
+
+
+});
+
+
+
+
+
+
+
+
+
+// =======================
+// 奖励兑换表
+// =======================
+
+
+let rewardBox=
+
+document.getElementById("rewardList");
+
+
+
+rewardBox.innerHTML="";
+
+
+
+
+
+rewards.forEach(function(r){
+
+
+
+let className="";
+
+
+
+rewardBox.innerHTML +=`
+
+
+
+<div class="reward">
+
+
+<div>
+
+⭐ ${r.point}
+
+=
+
+🎁 ${r.name}
+
+</div>
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+// =======================
+// 操作纪录
+// =======================
+
+
+let history=
+
+document.getElementById("history");
+
+
+
+history.innerHTML="";
+
+
+
+
+
+systemData.history
+
+.slice(0,50)
+
+.forEach(function(item,index){
+
+
+
+history.innerHTML +=`
+
+
+
+<div class="historyItem">
+
+
+<span>
+
+📌 ${item}
+
+</span>
+
+
+
+<button 
+
+class="deleteBtn"
+
+onclick="deleteHistory(${index})">
+
+🗑️
+
+</button>
+
+
+
+</div>
+
+
+
+`;
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+// =======================
+// 启动系统
+// =======================
+
+
+show();
+
+
+
+</script>
+
+
+</body>
+
+</html>
